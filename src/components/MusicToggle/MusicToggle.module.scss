@@ -1,0 +1,97 @@
+// 右下角的小音乐按钮：像一张圆形贴纸，播放时音符轻轻摇摆、旁边的小音柱跳动
+.toggle {
+  position: fixed;
+  right: clamp(14px, 2.2vw, 28px);
+  bottom: clamp(14px, 2.2vw, 26px);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 48px;
+  padding: 0 12px 0 10px;
+  border: 2px solid #2b2b2b;
+  border-radius: 999px 860px 920px 780px / 780px 920px 860px 999px; // 手绘感
+  background: #fffdf8;
+  color: #2b2b2b;
+  cursor: pointer;
+  box-shadow: 2px 3px 0 rgba(43, 43, 43, 0.85);
+  transform: rotate(-3deg);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    transform: rotate(2deg) scale(1.08);
+  }
+
+  &:active {
+    transform: rotate(0) scale(0.95);
+    box-shadow: 1px 1px 0 rgba(43, 43, 43, 0.85);
+  }
+
+  &:focus-visible {
+    outline: 2px dashed #e8798f;
+    outline-offset: 4px;
+  }
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+}
+
+.on .icon {
+  animation: bop 1.6s ease-in-out infinite;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+
+  i {
+    display: block;
+    width: 3px;
+    height: 4px;
+    border-radius: 2px;
+    background: #e8798f;
+    transition: height 0.3s;
+  }
+}
+
+.on .bars i {
+  animation: bar 0.9s ease-in-out infinite;
+
+  &:nth-child(2) {
+    animation-delay: -0.3s;
+    background: #5b7fb5;
+  }
+
+  &:nth-child(3) {
+    animation-delay: -0.6s;
+    background: #6d9b6a;
+  }
+}
+
+@keyframes bop {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-2px); }
+}
+
+@keyframes bar {
+  0%, 100% { height: 4px; }
+  50% { height: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .on .icon, .on .bars i { animation: none; }
+}
+
+// 手机上底部图标栏很宽，音乐按钮往上挪一点，避免挡住
+@media (max-width: 640px) {
+  .toggle {
+    bottom: 78px;
+    height: 42px;
+    padding: 0 10px 0 8px;
+  }
+}

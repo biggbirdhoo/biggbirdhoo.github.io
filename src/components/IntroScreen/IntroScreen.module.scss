@@ -1,0 +1,37 @@
+.introScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgb(247, 192, 83);
+  height: 100vh;
+  width: 100vw;
+  z-index: 100;
+  color: rgb(126, 85, 2);
+}
+
+.introScreenContent {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 24px;
+  gap: 12px;
+}
+
+.progressBarContainer {
+  width: 200px;
+  height: 8px;
+  background-color: rgba(126, 85, 2, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: rgb(126, 85, 2);
+  transition: width 0.3s ease-in;
+  border-radius: 4px;
+}

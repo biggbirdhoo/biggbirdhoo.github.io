@@ -1,0 +1,322 @@
+import React, { useRef, useMemo } from "react";
+import { useWorkClick } from "../../works/useWorkClick";
+import { useGLTF, useKTX2 } from "@react-three/drei";
+import { useKTX2Texture } from "../utils/ktxLoader";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { NICKNAME_URL } from "../../config/links";
+
+export default function Model(props) {
+  const { nodes, materials } = useGLTF("/models/scene_1.glb", "/draco/");
+  const workClick = useWorkClick(nodes);
+
+  const mrsPandaRef = useRef();
+
+  const dragonHead = useRef();
+  const dragonLegFrontLeft = useRef();
+  const dragonLegBackLeft = useRef();
+  const dragonLegFrontRight = useRef();
+  const dragonLegBackRight = useRef();
+
+  const waterfall = useRef();
+  const waterfallFoam = useRef();
+
+  const grass1 = useRef();
+  const grass2 = useRef();
+  const grass3 = useRef();
+  const grass4 = useRef();
+  const grass5 = useRef();
+  const grass6 = useRef();
+  const grass7 = useRef();
+  const grass8 = useRef();
+  const grass9 = useRef();
+  const grass10 = useRef();
+  const grass11 = useRef();
+
+  const introRef = useRef();
+  const aboutRef = useRef();
+  const introHovered = useRef(false);
+  const aboutHovered = useRef(false);
+  const introOriginalZ = -2.752;
+  const aboutOriginalZ = -2.752;
+  const introHoverZ = introOriginalZ + 3;
+  // 昵称卡片：悬停时只轻轻往前浮一点，避免挡住旁边的 Welcome、也不会从鼠标下面"跑掉"
+  const aboutHoverZ = aboutOriginalZ + 0.6;
+
+  const mrsPandaHovered = useRef(false);
+  const mrsPandaOriginalRotY = -0.42;
+  const mrsPandaHoverRotY = mrsPandaOriginalRotY - 0.3;
+
+  const lerpFactor = 0.08;
+
+  const waterfallone = useKTX2Texture("/textures/waterfall_one.webp");
+  const waterfalltwo = useKTX2Texture("/textures/waterfall_two.webp");
+  const not_waterfall = useKTX2Texture(
+    "/textures/not_waterfall.webp",
+    true,
+    0.6,
+    "double"
+  );
+  const scene_1_bg = useKTX2Texture("/textures/scene_1_bg.webp");
+  const scene_1 = useKTX2Texture("/textures/scene_1.webp");
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+
+    dragonHead.current.rotation.y = 0.2 * Math.sin(t * 0.8);
+    dragonLegFrontLeft.current.rotation.y = 0.3 * Math.sin(t + Math.PI);
+    dragonLegBackLeft.current.rotation.y = 0.3 * Math.sin(t * 0.9 + Math.PI);
+    dragonLegFrontRight.current.rotation.y = 0.2 * Math.sin(t);
+    dragonLegBackRight.current.rotation.y = 0.2 * Math.sin(t + Math.PI);
+
+    const useAlt = Math.sin(t * 4) > 0;
+    const mat = useAlt ? waterfalltwo : waterfallone;
+
+    if (waterfall.current) {
+      waterfall.current.material = mat;
+    }
+
+    if (waterfallFoam.current) {
+      waterfallFoam.current.material = mat;
+    }
+
+    if (introRef.current) {
+      const targetZ = introHovered.current ? introHoverZ : introOriginalZ;
+      introRef.current.position.z +=
+        (targetZ - introRef.current.position.z) * lerpFactor;
+    }
+
+    if (grass1.current) {
+      grass1.current.scale.z = 0.1 * Math.sin(t * 2.98) + 0.9;
+      grass2.current.scale.z = 0.1 * Math.sin(t * 3.12) + 0.9;
+      grass3.current.scale.z = 0.1 * Math.sin(t * 2.95) + 0.9;
+      grass4.current.scale.z = 0.1 * Math.sin(t * 3.01) + 0.9;
+      grass5.current.scale.z = 0.1 * Math.sin(t * 3.02) + 0.9;
+      grass6.current.scale.z = 0.1 * Math.sin(t * 3.05) + 0.9;
+      grass7.current.scale.z = 0.1 * Math.sin(t * 2.89) + 0.9;
+      grass8.current.scale.z = 0.1 * Math.sin(t * 2.99) + 0.9;
+      grass9.current.scale.z = 0.1 * Math.sin(t * 3) + 0.9;
+      grass10.current.scale.z = 0.1 * Math.sin(t * 2.9) + 0.9;
+      grass11.current.scale.z = 0.1 * Math.sin(t * 2.998) + 0.9;
+    }
+
+    if (aboutRef.current) {
+      const targetZ = aboutHovered.current ? aboutHoverZ : aboutOriginalZ;
+      aboutRef.current.position.z +=
+        (targetZ - aboutRef.current.position.z) * lerpFactor;
+    }
+
+    if (mrsPandaRef.current) {
+      const targetRotY = mrsPandaHovered.current
+        ? mrsPandaHoverRotY
+        : mrsPandaOriginalRotY;
+      mrsPandaRef.current.rotation.y +=
+        (targetRotY - mrsPandaRef.current.rotation.y) * lerpFactor;
+    }
+  });
+
+  return (
+    <group {...props} {...workClick} dispose={null}>
+      <mesh
+        geometry={nodes.Plane029.geometry}
+        material={scene_1}
+        position={[-3.042, 3.941, -2.322]}
+        rotation={[Math.PI / 2, 0, 0]}
+      />
+      <mesh
+        ref={dragonHead}
+        geometry={nodes.Plane037.geometry}
+        material={scene_1}
+        position={[-5.243, 4.082, -2.267]}
+        rotation={[Math.PI / 2, -0.082, 0]}
+      />
+      <mesh
+        ref={dragonLegFrontLeft}
+        geometry={nodes.Plane089.geometry}
+        material={scene_1}
+        position={[-3.93, 3.518, -2.266]}
+        rotation={[Math.PI / 2, 0.065, 0]}
+      />
+      <mesh
+        ref={dragonLegFrontRight}
+        geometry={nodes.Plane090.geometry}
+        material={scene_1}
+        position={[-3.974, 3.587, -2.409]}
+        rotation={[Math.PI / 2, -0.19, 0]}
+      />
+      <mesh
+        ref={mrsPandaRef}
+        geometry={nodes.Plane116.geometry}
+        material={scene_1}
+        position={[-5.746, 0.854, -2.671]}
+        rotation={[-1.501, mrsPandaOriginalRotY, -3.093]}
+        onPointerEnter={() => (mrsPandaHovered.current = true)}
+        onPointerLeave={() => (mrsPandaHovered.current = false)}
+      />
+      <mesh
+        geometry={nodes.Plane124.geometry}
+        material={scene_1}
+        position={[-9.272, 0.977, -1.861]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={dragonLegBackLeft}
+        geometry={nodes.Plane129.geometry}
+        material={scene_1}
+        position={[-2.078, 3.564, -2.266]}
+        rotation={[Math.PI / 2, 0.272, 0]}
+      />
+      <mesh
+        ref={dragonLegBackRight}
+        geometry={nodes.Plane130.geometry}
+        material={scene_1}
+        position={[-2.121, 3.596, -2.451]}
+        rotation={[Math.PI / 2, 0.781, 0]}
+      />
+      <mesh
+        ref={grass11}
+        geometry={nodes.Plane019.geometry}
+        material={scene_1}
+        position={[-7.18, 0.6, -0.032]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass10}
+        geometry={nodes.Plane021.geometry}
+        material={scene_1}
+        position={[-8.939, 0.6, -0.632]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass1}
+        geometry={nodes.Plane035.geometry}
+        material={scene_1}
+        position={[-10.407, 0.6, -0.18]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass9}
+        geometry={nodes.Plane044.geometry}
+        material={scene_1}
+        position={[-5.758, 0.567, -0.294]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass8}
+        geometry={nodes.Plane051.geometry}
+        material={scene_1}
+        position={[-16.072, 0.543, -0.242]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass2}
+        geometry={nodes.Plane067.geometry}
+        material={scene_1}
+        position={[-17.956, 0.6, -0.18]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass7}
+        geometry={nodes.Plane097.geometry}
+        material={scene_1}
+        position={[-14.164, 0.565, -2.277]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass3}
+        geometry={nodes.Plane098.geometry}
+        material={scene_1}
+        position={[-18.584, 0.576, -2.295]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        geometry={nodes.Plane099.geometry}
+        material={scene_1}
+        position={[-12.503, 0.574, -2.199]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass6}
+        geometry={nodes.Plane100.geometry}
+        material={scene_1}
+        position={[-14.476, 0.585, -0.393]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass5}
+        geometry={nodes.Plane101.geometry}
+        material={scene_1}
+        position={[-16.49, 0.655, -1.962]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        ref={grass4}
+        geometry={nodes.Plane102.geometry}
+        material={scene_1}
+        position={[-5.192, 0.585, -0.816]}
+        rotation={[Math.PI / 2, -0.102, 0]}
+      />
+      <mesh
+        geometry={nodes["First_Scene_-_Bg"].geometry}
+        material={scene_1_bg}
+        position={[-21.188, 0.605, -0.262]}
+      />
+      <mesh
+        geometry={nodes["First_Scene_-_Bg001"].geometry}
+        material={scene_1_bg}
+        position={[-21.188, 0.605, -0.262]}
+      />
+      <mesh
+        geometry={nodes.not_waterfall.geometry}
+        material={not_waterfall}
+        position={[-7.867, 2.012, -2.444]}
+        rotation={[Math.PI / 2, 0.025, 0]}
+      />
+      <mesh
+        ref={introRef}
+        geometry={nodes.intro.geometry}
+        material={not_waterfall}
+        position={[-17.941, 2.096, introOriginalZ]}
+        rotation={[Math.PI / 2, 0.025, 0]}
+        onPointerEnter={() => (introHovered.current = true)}
+        onPointerLeave={() => (introHovered.current = false)}
+      />
+      <mesh
+        ref={aboutRef}
+        geometry={nodes.about.geometry}
+        material={not_waterfall}
+        position={[-15.7, 1.987, aboutOriginalZ]}
+        rotation={[Math.PI / 2, 0.025, 0]}
+        onPointerEnter={() => {
+          aboutHovered.current = true;
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerLeave={() => {
+          aboutHovered.current = false;
+          document.body.style.cursor = "auto";
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          window.open(NICKNAME_URL, "_blank", "noopener,noreferrer");
+        }}
+      />
+      <mesh
+        ref={waterfall}
+        geometry={nodes.Waterfall001.geometry}
+        material={waterfallone}
+        position={[-10.609, 1.507, -2.46]}
+        rotation={[-Math.PI / 2, 0, -Math.PI]}
+      />
+      <mesh
+        ref={waterfallFoam}
+        geometry={nodes.Waterfall_Foam001.geometry}
+        material={waterfallone}
+        position={[-10.742, 1.649, -3.101]}
+        rotation={[-1.0145, 0.026, 3.1334]}
+        scale={[1.5784, 10.1882, 1.2255]}
+      />
+    </group>
+  );
+}
+
+useGLTF.preload("/models/scene_1.glb", "/draco/");

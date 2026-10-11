@@ -1,0 +1,79 @@
+.bar {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.2vw, 28px);
+  pointer-events: none; // 空白处不挡住 3D 场景的滚动和拖动
+  user-select: none;
+}
+
+.item {
+  pointer-events: auto;
+  display: block;
+  cursor: pointer;
+  transform-origin: 50% 80%;
+  animation: sway 3.2s ease-in-out infinite;
+  transition: filter 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &:hover,
+  &:focus-visible {
+    animation: wiggle 0.5s ease-in-out infinite;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18));
+    outline: none;
+
+    img {
+      transform: scale(1.14);
+    }
+  }
+
+  &:active img {
+    transform: scale(0.95);
+  }
+}
+
+.wide {
+  width: clamp(72px, 9vw, 120px);
+}
+
+.square {
+  width: clamp(34px, 4vw, 54px);
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg) translateY(0);
+  }
+  50% {
+    transform: rotate(2.5deg) translateY(-2px);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .item:hover {
+    animation: none;
+  }
+}
