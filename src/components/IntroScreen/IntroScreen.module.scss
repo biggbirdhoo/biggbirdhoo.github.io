@@ -1,37 +1,383 @@
-.introScreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: rgb(247, 192, 83);
-  height: 100vh;
-  width: 100vw;
-  z-index: 100;
-  color: rgb(126, 85, 2);
-}
+$ink: #2b2b2b;
+$paper: #fffdf7;
+$pink: #e8798f;
+$green: #6d9b6a;
+$hand: "Caveat", "ZCOOL KuaiLe", cursive;
+$spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-.introScreenContent {
-  height: 100%;
-  width: 100%;
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.6vh, 24px);
+  padding: 24px 16px 64px;
+  background-color: #fbfaf6;
+  background-image: radial-gradient(#e2ddd1 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+  color: $ink;
+  font-family: $hand;
   text-align: center;
-  line-height: 24px;
-  gap: 12px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.9s ease 0.35s;
+
+  &.isReady {
+    cursor: pointer;
+  }
+
+  &.isLeaving {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
-.progressBarContainer {
-  width: 200px;
-  height: 8px;
-  background-color: rgba(126, 85, 2, 0.3);
-  border-radius: 4px;
-  overflow: hidden;
+// ---------- logo ----------
+.logo {
+  width: min(210px, 50vw);
+  transform: rotate(-3deg);
+  animation: float 3.2s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.progressBar {
+// ---------- 刷卡机 + 通行证 ----------
+.machine {
+  position: relative;
+  width: min(520px, 88vw);
+  aspect-ratio: 520 / 263;
+  margin-top: clamp(12px, 4vh, 36px);
+}
+
+.cardTrack {
+  position: absolute;
+  bottom: 33.5%;
+  width: 50%;
+  transform: translateX(-50%);
+  transition: left 0.12s linear;
+
+  .isReady & {
+    transition: left 0.8s cubic-bezier(0.34, 1.3, 0.64, 1);
+  }
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 300 / 190;
+  container-type: inline-size;
+  background: $paper;
+  border-radius: 6cqw;
+  transform-origin: 50% 100%;
+  transition: transform 0.7s $spring;
+
+  .intro:not(.isReady) & {
+    animation: swipeBob 0.9s ease-in-out infinite;
+  }
+
+  .isReady & {
+    transform: translateY(-16%) rotate(-4deg);
+  }
+
+  .isLeaving & {
+    transform: translate(190%, -30%) rotate(16deg);
+    transition: transform 0.65s cubic-bezier(0.55, 0, 0.75, 0.2);
+  }
+}
+
+.cardFrame,
+.reader svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  background-color: rgb(126, 85, 2);
-  transition: width 0.3s ease-in;
-  border-radius: 4px;
+  overflow: visible;
+  filter: url(#jw-wobble);
+  pointer-events: none;
+}
+
+.ink,
+.inkThin,
+.readerBody {
+  fill: none;
+  stroke: $ink;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkThin {
+  stroke-width: 1.6;
+  opacity: 0.55;
+}
+
+.readerBody {
+  fill: $paper;
+}
+
+.cardHead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 23%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 7cqw;
+  letter-spacing: 0.04em;
+  color: $pink;
+}
+
+.cardBody {
+  position: absolute;
+  top: 28%;
+  left: 6%;
+  right: 6%;
+  bottom: 9%;
+  display: flex;
+  gap: 5cqw;
+}
+
+.photo {
+  width: 36%;
+  flex: none;
+  border: 0.8cqw solid $ink;
+  border-radius: 3cqw 4cqw 2.5cqw 4cqw;
+  overflow: hidden;
+  transform: rotate(-2deg);
+  background: #fff;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 45% 25%;
+  }
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.label {
+  font-size: 6.5cqw;
+  line-height: 1;
+  color: #8a8a8a;
+}
+
+.value {
+  font-size: 10cqw;
+  font-weight: 700;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.barcode {
+  margin-top: auto;
+  display: flex;
+  align-items: stretch;
+  gap: 1.3cqw;
+  height: 7cqw;
+
+  i {
+    display: block;
+    background: $ink;
+    border-radius: 1px;
+  }
+}
+
+.stamp {
+  position: absolute;
+  bottom: 6%;
+  right: 4%;
+  padding: 0.5cqw 3cqw;
+  background: rgba(255, 253, 247, 0.9);
+  border: 0.9cqw solid $pink;
+  border-radius: 3cqw;
+  color: $pink;
+  font-weight: 700;
+  font-size: 10cqw;
+  line-height: 1.1;
+  opacity: 0;
+  transform: rotate(-14deg) scale(2.2);
+  pointer-events: none;
+
+  .isReady & {
+    animation: stamp 0.45s 0.35s $spring forwards;
+  }
+}
+
+.reader {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 41.8%;
+}
+
+.brand {
+  position: absolute;
+  left: 6%;
+  bottom: 20%;
+  font-weight: 700;
+  font-size: clamp(15px, 4.2vw, 24px);
+  letter-spacing: 0.08em;
+}
+
+.screen {
+  position: absolute;
+  right: 15%;
+  bottom: 17%;
+  min-width: 4.4em;
+  padding: 0.05em 0.5em;
+  border-radius: 10px 7px 11px 8px;
+  background: $ink;
+  color: #ffd1da;
+  font-weight: 700;
+  font-size: clamp(15px, 4.2vw, 24px);
+  font-variant-numeric: tabular-nums;
+
+  .isReady & {
+    color: #c5f0c4;
+  }
+}
+
+.led {
+  position: absolute;
+  right: 5.5%;
+  bottom: 31%;
+  width: clamp(12px, 3vw, 18px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid $ink;
+  background: $pink;
+  animation: blink 0.8s steps(2, jump-none) infinite;
+
+  .isReady & {
+    background: $green;
+    animation: none;
+    box-shadow: 0 0 0 5px rgba(109, 155, 106, 0.25);
+  }
+}
+
+// ---------- 文字 ----------
+.msg {
+  margin: 0;
+  font-size: clamp(22px, 5.6vw, 30px);
+  min-height: 1.3em;
+}
+
+.enter {
+  font-family: $hand;
+  font-weight: 700;
+  font-size: clamp(22px, 5.4vw, 28px);
+  color: $ink;
+  padding: 0.15em 1.1em 0.2em;
+  background: $paper;
+  border: 2.5px solid $ink;
+  border-radius: 255px 25px 225px 25px / 25px 225px 25px 255px;
+  box-shadow: 3px 4px 0 $ink;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px) scale(0.85);
+  pointer-events: none;
+  transition: transform 0.5s $spring, opacity 0.3s ease, background 0.2s ease;
+
+  .isReady & {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: 0.6s, 0.6s, 0s;
+  }
+
+  .isReady &:hover,
+  .isReady &:focus-visible {
+    background: #ffe3e9;
+    transform: translateY(-2px) rotate(-2deg);
+    transition-delay: 0s;
+    outline: none;
+  }
+
+  .isReady &:active {
+    transform: translate(2px, 3px);
+    box-shadow: 1px 1px 0 $ink;
+  }
+}
+
+.hint {
+  margin: 0;
+  font-size: clamp(16px, 4vw, 20px);
+  color: #8a8a8a;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.9s;
+
+  .isReady & {
+    opacity: 1;
+  }
+}
+
+.credits {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 16px;
+  color: #a9a39a;
+  text-decoration: none;
+
+  &:hover {
+    color: $ink;
+    text-decoration: underline;
+  }
+}
+
+// ---------- 小星星 ----------
+.spark {
+  position: absolute;
+  font-size: clamp(18px, 3vw, 30px);
+  pointer-events: none;
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+.s1 { top: 16%; left: 14%; color: $pink; }
+.s2 { top: 24%; right: 15%; color: #5b7fb5; animation-delay: 0.6s; }
+.s3 { bottom: 22%; left: 20%; color: #5b7fb5; animation-delay: 1.2s; }
+.s4 { bottom: 28%; right: 12%; color: $pink; animation-delay: 1.8s; }
+
+// ---------- 动画 ----------
+@keyframes swipeBob {
+  0%, 100% { transform: rotate(-1.5deg) translateY(0); }
+  50% { transform: rotate(1.5deg) translateY(-3%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50% { transform: rotate(-1deg) translateY(-6px); }
+}
+
+@keyframes stamp {
+  to { opacity: 0.92; transform: rotate(-14deg) scale(1); }
+}
+
+@keyframes blink {
+  50% { opacity: 0.25; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo, .card, .spark, .led { animation: none !important; }
 }
